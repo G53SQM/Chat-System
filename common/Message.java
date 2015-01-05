@@ -3,7 +3,11 @@ package common;
 public class Message implements java.io.Serializable
 {
 	private static final long serialVersionUID = 1L;
+<<<<<<< HEAD
    	
+=======
+	
+>>>>>>> origin/Server
 	
 	private String msgType, srcUser, destUser, content, time;
 	
