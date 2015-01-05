@@ -71,23 +71,26 @@ public class TestClientThread
 			
 			Message msg = new Message();
 			msg.setMsgTypye(MessageType.MSG_PLAIN);
-			msg.setSrcUser("id");
+			msg.setSrcUser("idSrc");
+			msg.setDestUser("id");
 			msg.setContent("");
-			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			oos.writeObject(msg);
+			
 
 			msg = new Message();
 			msg.setMsgTypye(MessageType.MSG_LIST_FND);
 			msg.setSrcUser("id");
+			msg.setDestUser("id");
 			msg.setContent("");
-			oos = new ObjectOutputStream(socket.getOutputStream());
+			oos = new ObjectOutputStream(s.getOutputStream());
 			oos.writeObject(msg);
 			
 			msg = new Message();
 			msg.setMsgTypye(MessageType.MSG_SERVER_OUT);
 			msg.setSrcUser("id");
 			msg.setContent("");
-			oos = new ObjectOutputStream(socket.getOutputStream());
+			oos = new ObjectOutputStream(s.getOutputStream());
 			oos.writeObject(msg);
 						
 			ssocket.close();
