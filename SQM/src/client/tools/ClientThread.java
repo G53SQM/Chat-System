@@ -39,8 +39,12 @@ public class ClientThread extends Thread
 				}
 				else if (msgType.equals(MessageType.MSG_SERVER_OUT))
 				{
-					Resource.rmThread(userID);
-					Resource.rmProxy(userID);
+					new Thread(() -> 
+					{
+						Resource.getProxy(userID).offline();
+						Resource.rmThread(userID);
+						Resource.rmProxy(userID);						
+					}).start();
 					socket.close();
 					break;
 				}

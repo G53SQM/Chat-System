@@ -46,6 +46,7 @@ public class ChatFrame extends JFrame
 	private JScrollPane inputPane = new JScrollPane();
 	private JTextArea display = new JTextArea();
 	private JScrollPane screen = new JScrollPane();
+	private JButton send = new JButton("Send");
 	
 	private String userID = "";
 	private DefaultListModel<String> fndList;
@@ -67,7 +68,7 @@ public class ChatFrame extends JFrame
 					ObjectOutputStream oos = new ObjectOutputStream(Resource.getThread(userID).getSocket().getOutputStream());
 					oos.writeObject(msg);
 				}
-				catch (Exception ex) { ex.printStackTrace();}
+				catch (Exception ex) {}
 			}
 		});
 		
@@ -108,8 +109,7 @@ public class ChatFrame extends JFrame
 		JButton clear = new JButton("Clear");
 		clear.addActionListener((e) -> {input.setText("");});
 		clear.setPreferredSize(new Dimension(80, 30));
-		buttons.add(clear);
-		JButton send = new JButton("Send");
+		buttons.add(clear);		
 		send.addActionListener((e) -> {sendMsg();});
 		send.setPreferredSize(new Dimension(80, 30));
 		buttons.add(send);
@@ -196,6 +196,7 @@ public class ChatFrame extends JFrame
 	
 	public void offline()
 	{
+		send.setEnabled(false);
 		JOptionPane.showMessageDialog(null, "Server disconnected", "Chat System",
 				JOptionPane.WARNING_MESSAGE, null);
 	}

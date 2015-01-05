@@ -1,5 +1,7 @@
 package server.tools;
 
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -12,5 +14,6 @@ public class Resource
 	public static void setThread(String id, ServerThread thread) { threadPool.put(id, thread);}
 	public static void rmThread(String id) { threadPool.remove(id);}
 	public static Set<String> getOnlineUsers() { return threadPool.keySet();}
+	public static Collection<ServerThread> getConnections() { return threadPool.values();}
 	
 }

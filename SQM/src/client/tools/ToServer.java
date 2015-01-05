@@ -12,7 +12,7 @@ import common.User;
 public class ToServer
 {
 	//private static String serverIP = "10.154.135.59";
-	private static int port = 19999;
+	private static int port = 12360;
 	
 	public void login(String serverIP, User user, Login frame) throws Exception
 	{

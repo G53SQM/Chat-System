@@ -30,13 +30,13 @@ public class UserChecker
 				String[] token = str.split(",");
 				users.put(token[0], token[1]);
 			}
+			br.close();
 		} 
 		catch (Exception e) { e.printStackTrace();}
 	}	
 	
 	public static boolean userValid(User user)
 	{
-		System.out.println(user.getID() + " " + user.getPassword());
 		String pass = users.get(user.getID());	
 		if (pass != null)
 			return pass.equals(user.getPassword()) && !userOnline(user.getID()); 

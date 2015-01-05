@@ -7,47 +7,51 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import server.db.UserChecker;
+import server.view.ServerVisual;
 import common.Message;
 import common.MessageType;
 import common.User;
 
 public class Server 
 {
-	public static int port = 19999;
+	public static int port = 12360;
 	
-	public void run()
+	private ServerVisual display;
+	private boolean flag = true;
+	private ServerSocket ssocket;
+	
+	public Server(ServerVisual sv) {display = sv;}
+	
+	public void run() throws Exception
 	{
-		try
+		ssocket = new ServerSocket(port);
+		display.disp("Server launched " + InetAddress.getLocalHost().getHostAddress());
+		while (flag)
 		{
-			ServerSocket ssocket = new ServerSocket(port);
-			System.out.println("Server launched " + InetAddress.getLocalHost().getHostAddress());
-			while (true)
+			Socket socket = ssocket.accept();
+			display.disp("Connection established from " + socket.getRemoteSocketAddress());
+			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+			User user = (User) ois.readObject();	
+			display.disp("Logging in using name = " + user.getID() + ", password = " + user.getPassword());
+			Message msg = new Message();
+			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+			if (userValid(user))
 			{
-				Socket socket = ssocket.accept();
-				System.out.println("Connection established from " + socket.getRemoteSocketAddress());
-				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-				User user = (User) ois.readObject();	
-				System.out.println("Logging in using name = " + user.getID() + ", password = " + user.getPassword());
-				Message msg = new Message();
-				ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-				if (userValid(user))
-				{
-					UserChecker.userLogin(user.getID());
-					msg.setMsgTypye(MessageType.MSG_LOGIN_SUCC);
-					oos.writeObject(msg);
-					ServerThread thread = new ServerThread(socket, user.getID());
-					Resource.setThread(user.getID(), thread);
-					thread.start();
-				}
-				else
-				{
-					msg.setMsgTypye(MessageType.MSG_LOGIN_FAIL);
-					oos.writeObject(msg);
-					socket.close();
-				}
+				UserChecker.userLogin(user.getID());
+				msg.setMsgTypye(MessageType.MSG_LOGIN_SUCC);
+				oos.writeObject(msg);
+				ServerThread thread = new ServerThread(socket, user.getID(), display);
+				Resource.setThread(user.getID(), thread);
+				thread.start();
+			}
+			else
+			{
+				msg.setMsgTypye(MessageType.MSG_LOGIN_FAIL);
+				oos.writeObject(msg);
+				socket.close();
 			}
 		}
-		catch (Exception e) { e.printStackTrace();}
+		
 	}
 	
 	private boolean userValid(User user)
@@ -55,8 +59,20 @@ public class Server
 		return UserChecker.userValid(user);
 	}
 	
-	public static void main(String[] args)
+	public void shutdown() 
 	{
-		new Server().run();
+		Object[] users = Resource.getConnections().toArray();
+		if (users != null)
+			for (Object thread : users)
+				((ServerThread) thread).terminate();
+		flag = false;
+		try
+		{
+			ssocket.close();	
+		}
+		catch (Exception e) { e.printStackTrace();}
 	}
+	
+	
+	
 }

@@ -36,8 +36,7 @@ public class Login extends JFrame
 	private JLabel info = new JLabel();
 	
 	public Login()
-	{
-		
+	{		
 		try 
 		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
