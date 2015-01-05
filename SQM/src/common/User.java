@@ -7,10 +7,7 @@ public class User implements java.io.Serializable
 	private String id, password;
 	
 	public User(String name, String pass) { id = name; password = pass;}
-<<<<<<< HEAD
-=======
 	public User() { id = ""; password = "";}
->>>>>>> origin/Server
 	
 	public String getID() { return id;}
 	public void setID(String str) { id = str;}

@@ -5,9 +5,8 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Set;
 
-
+import server.db.UserChecker;
 import common.Message;
 import common.MessageType;
 import common.User;
@@ -54,7 +53,7 @@ public class Server
 	
 	private boolean userValid(User user)
 	{
-		return true; // TODO
+		return UserChecker.userValid(user);
 	}
 	
 	public static void main(String[] args)

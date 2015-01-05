@@ -36,7 +36,8 @@ public class ServerThread extends Thread
 				if (msgType.equals(MessageType.MSG_PLAIN))
 				{
 					System.out.println("Message received from " + msg.getSrcUser() + ", to " + msg.getDestUser());
-					Iterable<String> userList = Resource.getOnlineUsers();
+					Iterable<String> userList = msg.getDestUser().equals("#All") ? Resource.getOnlineUsers()
+											: Arrays.asList(new String[] {msg.getSrcUser(), msg.getDestUser()});
 					userList.forEach((dest) ->
 					{				
 						try
@@ -51,18 +52,7 @@ public class ServerThread extends Thread
 				}
 				else if (msgType.equals(MessageType.MSG_GET_FND))
 				{
-					Set<String>	users = Resource.getOnlineUsers();
-					for (String destUser : users)
-					{
-						String con = "";
-						for (String str : users) con = con + str + " ";
-						Message msgReturn = new Message();
-						msgReturn.setMsgTypye(MessageType.MSG_LIST_FND);
-						msgReturn.setDestUser(destUser);
-						msgReturn.setContent(con);
-						ObjectOutputStream oos = new ObjectOutputStream(Resource.getThread(destUser).getSocket().getOutputStream());
-						oos.writeObject(msgReturn);
-					}
+					broadcastOnlineList();	
 				}	
 				else if (msgType.equals(MessageType.MSG_CLIENT_OUT))
 				{
@@ -75,6 +65,9 @@ public class ServerThread extends Thread
 					socket.close();
 					Resource.rmThread(msg.getSrcUser());
 					UserChecker.userLogout(msg.getSrcUser());
+					
+					broadcastOnlineList();				
+					
 					break;
 				}
 				numErr = numErr == 0 ? 0 : numErr - 1;
@@ -97,4 +90,23 @@ public class ServerThread extends Thread
 		}
 	}
 	
+	private void broadcastOnlineList()
+	{
+		try
+		{
+			Set<String>	users = Resource.getOnlineUsers();
+			for (String destUser : users)
+			{
+				String con = "";
+				for (String str : users) con = con + str + " ";
+				Message msgReturn = new Message();
+				msgReturn.setMsgTypye(MessageType.MSG_LIST_FND);
+				msgReturn.setDestUser(destUser);
+				msgReturn.setContent(con);
+				ObjectOutputStream oos = new ObjectOutputStream(Resource.getThread(destUser).getSocket().getOutputStream());
+				oos.writeObject(msgReturn);
+			}
+		}	
+		catch (Exception e) { e.printStackTrace();}
+	}
 }
