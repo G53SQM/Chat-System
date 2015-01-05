@@ -14,13 +14,20 @@ public class TestResource
 {
 	
 	@Test
-	public void testTread()
+	public void testThread()
 	{
 		String id = "id";
 		ClientThread thread = new ClientThread(new Socket(), id);
 		Resource.setThread(id, thread);
-		assertEquals(thread, Resource.getThread(id));
-		
+		assertEquals(thread, Resource.getThread(id));		
+	}
+	
+	@Test
+	public void testThreadRm()
+	{
+		String id = "id";
+		ClientThread thread = new ClientThread(new Socket(), id);
+		Resource.setThread(id, thread);		
 		Resource.rmThread(id);
 		assertNull(Resource.getThread(id));
 	}
@@ -33,8 +40,15 @@ public class TestResource
 		Resource.setProxy(id, proxy);
 		assertEquals(proxy, Resource.getProxy(id));
 		
+	}
+	
+	@Test
+	public void testProxyRm()
+	{
+		String id = "id";
+		ViewerProxy proxy = new ViewerProxy();
+		Resource.setProxy(id, proxy);
 		Resource.rmProxy(id);
 		assertNull(Resource.getProxy(id));
-		
 	}
 }

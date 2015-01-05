@@ -15,7 +15,6 @@ public class Server
 {
 	public static int port = 19999;
 	
-	
 	public void run()
 	{
 		try

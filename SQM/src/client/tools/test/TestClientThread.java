@@ -54,7 +54,7 @@ public class TestClientThread
 	
 	
 	@Test
-	public void testMsg()
+	public void testMsgPlain()
 	{
 		try
 		{
@@ -67,37 +67,67 @@ public class TestClientThread
 			Resource.setThread("id", thread);
 			thread.start();
 			Socket s = ssocket.accept();
-			
 			Message msg = new Message();
 			msg.setMsgTypye(MessageType.MSG_PLAIN);
 			msg.setSrcUser("id");
 			msg.setContent("");
-			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			oos.writeObject(msg);
-
-			msg = new Message();
+			ssocket.close();
+		}
+		catch (Exception e) { e.printStackTrace();}
+	}
+	
+	@Test
+	public void testMsgListFnd()
+	{
+		try
+		{
+			String serverIP = InetAddress.getLocalHost().getHostAddress();	
+			ServerSocket ssocket = new ServerSocket(port);
+			ssocket.setSoTimeout(100);
+			Socket socket = new Socket(serverIP, port);
+			ClientThread thread = new ClientThread(socket, "id");
+			Resource.setProxy("id", new ViewerProxy());
+			Resource.setThread("id", thread);
+			thread.start();
+			Socket s = ssocket.accept();
+			Message msg = new Message();
 			msg.setMsgTypye(MessageType.MSG_LIST_FND);
 			msg.setSrcUser("id");
 			msg.setContent("");
-			oos = new ObjectOutputStream(socket.getOutputStream());
+			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			oos.writeObject(msg);
-			
-			msg = new Message();
-			msg.setMsgTypye(MessageType.MSG_SERVER_OUT);
-			msg.setSrcUser("id");
-			msg.setContent("");
-			oos = new ObjectOutputStream(socket.getOutputStream());
-			oos.writeObject(msg);
-						
 			ssocket.close();
 		}
 		catch (Exception e) { e.printStackTrace();}
 	}
 	
 	
-	
-	
-	
+	@Test
+	public void testMsgServerOut()
+	{
+		try
+		{
+			String serverIP = InetAddress.getLocalHost().getHostAddress();	
+			ServerSocket ssocket = new ServerSocket(port);
+			ssocket.setSoTimeout(100);
+			Socket socket = new Socket(serverIP, port);
+			ClientThread thread = new ClientThread(socket, "id");
+			Resource.setProxy("id", new ViewerProxy());
+			Resource.setThread("id", thread);
+			thread.start();
+			Socket s = ssocket.accept();
+			Message msg = new Message();
+			msg.setMsgTypye(MessageType.MSG_SERVER_OUT);
+			msg.setSrcUser("id");
+			msg.setContent("");
+			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
+			oos.writeObject(msg);
+			ssocket.close();
+		}
+		catch (Exception e) { e.printStackTrace();}
+	}	
 	
 
 }
