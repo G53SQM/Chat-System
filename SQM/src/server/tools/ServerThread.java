@@ -94,8 +94,10 @@ public class ServerThread extends Thread
 				{
 					Resource.rmThread(userID);
 					try 
-					{
+					{						
 						socket.close();
+						Resource.rmThread(userID);
+						UserChecker.userLogout(userID);
 					} 
 					catch (IOException e1) { e1.printStackTrace();}
 					break;
